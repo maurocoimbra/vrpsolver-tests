@@ -52,16 +52,12 @@ def solve_problem(rcsp, model, problem):
     status = model.Status
 
     out: Dict[str, Any] = {
-        "status": str(status),
+        "status": status,
         "optimal": status == GRB.OPTIMAL,
         "has_solution": model.SolCount > 0,
     }
 
-    if status in (GRB.INFEASIBLE, GRB.UNBOUNDED, GRB.INF_OR_UNBD):
-        out["details"] = "No solution (infeasible/unbounded or solve failed)."
-    elif model.SolCount == 0:
-        out["details"] = "Optimization finished, but no feasible solution was found."
-    else:
+    if status == GRB.OPTIMAL:
         out["objective_value"] = model.ObjVal
         path = retrieve_path(model)
         out["path"] = path
