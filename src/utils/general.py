@@ -11,9 +11,159 @@ from mip import BINARY, CONTINUOUS, CBC, MINIMIZE, Model, OptimizationStatus, xs
 def _as_neighbor_set(v: Union[Set[str], List[str], Tuple[str, ...]]) -> Set[str]:
     return set(v)
 
+def read_instance(filename):
+    with open(filename, 'r') as f:
+        lines = [line.strip() for line in f.readlines()]
+
+    # skip comment lines
+    idx = 0
+    def next_data_line():
+        nonlocal idx
+        while idx < len(lines) and (lines[idx].startswith('#') or lines[idx] == ''):
+            idx += 1
+        data = lines[idx]
+        idx += 1
+        return data
+
+    # First block: general info
+    # nbVertices, maxArcId, nbElementaritySets, nbPackingSets, nbCoveringSets,
+    # symmetricCase, backwardSearchIsUsed, zeroReducedCostThreshold
+    parts = next_data_line().split()
+    nb_vertices = int(parts[0])
+    max_arc_id = int(parts[1])
+
+    # Second block: resources info
+    # nbMainResources, nbDisposableResources, nbStandardResources, bidirectionalBorderValue
+    parts = next_data_line().split()
+    nb_main_resources = int(parts[0])
+
+    # The actual number of distinct resources in the file equals nb_main_resources
+    nb_resources = nb_main_resources
+
+    # Read vertex info
+    lb = {}  # resource consumption lower bounds per vertex
+    ub = {}  # resource consumption upper bounds per vertex
+    for i in range(nb_vertices):
+        parts = next_data_line().split()
+        vert_alg_id = int(parts[0])
+
+        # Resource bounds line: lb ub bucketStep (for each main resource)
+        res_parts = next_data_line().split()
+        pos = 0
+        for r in range(nb_resources):
+            lb[(vert_alg_id, r)] = float(res_parts[pos])
+            ub[(vert_alg_id, r)] = float(res_parts[pos + 1])
+            pos += 3  # lb, ub, bucketStep
+
+        # nbInMemoryOfElemSets
+        next_data_line()
+
+    # Read arc info
+    num_arcs_line = next_data_line()
+    num_arcs = int(num_arcs_line.split()[0])
+
+    arcs = []
+    costs = {}
+    resource_cost = {}
+    for a in range(num_arcs):
+        # arcId, tailVertAlgId, headVertAlgId, elemSetId, packSetId, covSetId, reducedCost, totalCost
+        parts = next_data_line().split()
+        arc_id = int(parts[0])
+        tail = int(parts[1])
+        head = int(parts[2])
+        reduced_cost = float(parts[6])
+
+        arcs.append((tail, head))
+        costs[arc_id] = reduced_cost
+
+        # resource consumption: one value per resource on a single line
+        res_parts = next_data_line().split()
+        for r in range(nb_resources):
+            resource_cost[(arc_id, r)] = float(res_parts[r])
+
+        # nbInMemoryOfElemSets
+        next_data_line()
+        # nbBuckArcIntrvs + intervals
+        next_data_line()
+
+    source = 0
+    sink = nb_vertices - 1
+
+    return arcs, resource_cost, costs, lb, ub, source, sink
+
+
+def _vertex_id_to_letter_label(v: int) -> str:
+    """Map integer vertex id to label: 0->A, 1->B, ..., 25->Z, 26->AA, ..."""
+    if v < 0:
+        raise ValueError(f"vertex id must be non-negative, got {v}")
+    n = v + 1
+    chars: List[str] = []
+    while n:
+        n, r = divmod(n - 1, 26)
+        chars.append(chr(ord("A") + r))
+    return "".join(reversed(chars))
+
+
+def adapt_instance_to_cell8(arcs, resource_cost, costs, lb, ub, source, sink):
+    # String vertex ids as letters (0->A, 1->B, ...) for cell8-style problems
+    vertices = sorted({v for arc in arcs for v in arc})
+    # Ensure source/sink included
+    if source not in vertices:
+        vertices.insert(0, source)
+    if sink not in vertices:
+        vertices.append(sink)
+
+    vlabel = {v: _vertex_id_to_letter_label(v) for v in vertices}
+
+    # arcs: dict node -> set(neighbors)
+    arcs_dict = {vlabel[v]: set() for v in vertices}
+    for arc_id, (t, h) in enumerate(arcs):
+        arcs_dict[vlabel[t]].add(vlabel[h])
+
+    # resource_cost and costs: dict node -> dict(neighbor -> value)
+    resource_cost_dict = {vlabel[v]: {} for v in vertices}
+    costs_dict = {vlabel[v]: {} for v in vertices}
+    for arc_id, (t, h) in enumerate(arcs):
+        tail = vlabel[t]
+        head = vlabel[h]
+        # use arc_id keys from costs/resource_cost
+        # resource_cost keyed by (arc_id, r). We assume single resource r=0
+        rc = resource_cost.get((arc_id, 0), 0.0)
+        c = costs.get(arc_id, 0.0)
+        resource_cost_dict[tail][head] = rc
+        costs_dict[tail][head] = c
+
+    # lb/ub expected as dict vertex->value (example had single resource per vertex)
+    lb_dict = {}
+    ub_dict = {}
+    for (vert, r), val in lb.items():
+        lb_dict[vlabel[vert]] = val
+    for (vert, r), val in ub.items():
+        ub_dict[vlabel[vert]] = val
+
+    # ng_set: neighbor-exclusion sets, default empty sets; keep conservative default
+    ng_set = {vlabel[v]: set() for v in vertices}
+
+    source_label = vlabel[source]
+    sink_label = vlabel[sink]
+
+    return {
+        "source": source_label,
+        "sink": sink_label,
+        "arcs": arcs_dict,
+        "resource_cost": resource_cost_dict,
+        "costs": costs_dict,
+        "lb": lb_dict,
+        "ub": ub_dict,
+        "ng_set": ng_set,
+        "big_m": 100,
+        "max_seconds": 300,
+        "write_lp": None
+    }
+
 def load_problem(path: Optional[str], raw: Optional[str] = None) -> Dict[str, Any]:
     """Load problem from a JSON file path or raw string (stdin)."""
-    text = raw if raw is not None else open(path, encoding="utf-8").read()
+    text = open(path, encoding="utf-8").read()
     data = json.loads(text)
     required = ("source", "sink", "arcs", "resource_cost", "costs", "lb", "ub", "ng_set")
     for k in required:

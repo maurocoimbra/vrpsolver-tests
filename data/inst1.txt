@@ -1,0 +1,68 @@
+# _nbVertices >> maxArcId >> _nbElementaritySets >> _nbPackingSets >> _nbCoveringSets >> symmetricCase
+# >> _backwardSearchIsUsed >> _zeroReducedCostThreshold ;
+# 
+5 8 3 3 0 0 0 0.0
+# _nbMainResources >> _nbDisposableResources >> _nbStandardResources >> _bidirectionalBorderValue;
+# 
+1 1 1 0
+# for each vertex:
+#   vertAlgId >> vertId >> elemSetId >> packSetId >> covSetId >> otherBuckDomMaxDepth;
+#   resConsumptionLB[resAlgId] >> resConsumptionUB[resAlgId]; for each resource; and bucketSteps[resAlgId] if resource is main
+#   >> nbInMemoryOfElemSets
+0 0 3 3 -1 0
+0.0 200.0 1.8930317521686577
+0
+1 1 0 0 -1 0
+9.505141646160393 82.47481259643061 1.8930317521686577
+0
+2 2 1 1 -1 0
+36.48877408952807 93.86128747700451 1.8930317521686577
+0
+3 3 2 2 -1 0
+46.2204594316365 131.90304329570512 1.8930317521686577
+0
+4 4 3 3 -1 0
+0.0 200.0 1.8930317521686577
+0
+# for each arc:
+#   >> arcId >> tailVertAlgId >> headVertAlgId >> elemSetId >> packSetId >> covSetId >> reducedCost >> totalCost
+#    >> resConsumption[resAlgId]; for each resource
+#     ifs >> nbInMemoryOfElemSets; -> then read memory
+#     >> nbBuckArcIntrvs > then read intervals
+8
+0 0 1 3 -1 -1 -1.8723707017327977 0
+0.6790444432302025
+0
+1 0 105
+1 0 2 3 -1 -1 -1.6559641567016548 0
+0.9052516035072705
+0
+1 0 105
+2 0 4 3 -1 -1 -2.3179903139429263 0
+0.6978312986035216
+0
+1 0 105
+3 1 2 3 -1 -1 -1.1011396993258002 0
+0.8814322224863255
+0
+1 0 38
+4 1 3 3 -1 -1 -1.7332413016189416 0
+0.8473363941166807
+0
+1 0 38
+5 1 4 3 -1 -1 -1.0394824295114824 0
+0.6303314047765949
+0
+1 0 38
+6 2 4 3 -1 -1 -1.4005933062875056 0
+0.929153568069369
+0
+1 0 30
+7 3 1 3 -1 -1 -2.0945814962765334 0
+0.7808994846280963
+0
+1 0 45
+# nbCuts
+# cutId >> cutClass >> curDualVal >> numRows >> fiveOrMoreRowsType >> denominator
+# packing sets, arc_memory, mem_size -> read memory
+0
