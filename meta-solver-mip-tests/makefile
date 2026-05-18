@@ -3,9 +3,9 @@ BITS_OPTION = -m64
 
 
 ####diretorios com as libs do cplex
-RCSPDIR  = C:/dev/rcsp
+RCSPDIR  = /home/mauro/rcsp
 RCSPINCDIR = $(RCSPDIR)/include_dev
-RCSPLIBDIR = $(RCSPDIR)/build/lib/Release
+RCSPLIBDIR = $(RCSPDIR)/build/lib
 
 #### define o compilador
 CPPC = g++
