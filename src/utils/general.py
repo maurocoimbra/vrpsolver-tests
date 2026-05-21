@@ -15,7 +15,6 @@ def read_instance(filename):
     with open(filename, 'r') as f:
         lines = [line.strip() for line in f.readlines()]
 
-    # skip comment lines
     idx = 0
     def next_data_line():
         nonlocal idx
@@ -25,69 +24,37 @@ def read_instance(filename):
         idx += 1
         return data
 
-    # First block: general info
-    # nbVertices, maxArcId, nbElementaritySets, nbPackingSets, nbCoveringSets,
-    # symmetricCase, backwardSearchIsUsed, zeroReducedCostThreshold
+    # Header: nbVertices nbArcs source sink
     parts = next_data_line().split()
     nb_vertices = int(parts[0])
-    max_arc_id = int(parts[1])
+    nb_arcs = int(parts[1])
+    source = int(parts[2])
+    sink = int(parts[3])
 
-    # Second block: resources info
-    # nbMainResources, nbDisposableResources, nbStandardResources, bidirectionalBorderValue
-    parts = next_data_line().split()
-    nb_main_resources = int(parts[0])
-
-    # The actual number of distinct resources in the file equals nb_main_resources
-    nb_resources = nb_main_resources
-
-    # Read vertex info
-    lb = {}  # resource consumption lower bounds per vertex
-    ub = {}  # resource consumption upper bounds per vertex
+    # Vertices: id lowerBound upperBound
+    lb = {}
+    ub = {}
     for i in range(nb_vertices):
         parts = next_data_line().split()
-        vert_alg_id = int(parts[0])
+        vert_id = int(parts[0])
+        lb[(vert_id, 0)] = float(parts[1])
+        ub[(vert_id, 0)] = float(parts[2])
 
-        # Resource bounds line: lb ub bucketStep (for each main resource)
-        res_parts = next_data_line().split()
-        pos = 0
-        for r in range(nb_resources):
-            lb[(vert_alg_id, r)] = float(res_parts[pos])
-            ub[(vert_alg_id, r)] = float(res_parts[pos + 1])
-            pos += 3  # lb, ub, bucketStep
-
-        # nbInMemoryOfElemSets
-        next_data_line()
-
-    # Read arc info
-    num_arcs_line = next_data_line()
-    num_arcs = int(num_arcs_line.split()[0])
-
+    # Arcs: arcId tail head cost resourceCost
     arcs = []
     costs = {}
     resource_cost = {}
-    for a in range(num_arcs):
-        # arcId, tailVertAlgId, headVertAlgId, elemSetId, packSetId, covSetId, reducedCost, totalCost
+    for a in range(nb_arcs):
         parts = next_data_line().split()
         arc_id = int(parts[0])
         tail = int(parts[1])
         head = int(parts[2])
-        reduced_cost = float(parts[6])
+        cost = float(parts[3])
+        res_cost = float(parts[4])
 
         arcs.append((tail, head))
-        costs[arc_id] = reduced_cost
-
-        # resource consumption: one value per resource on a single line
-        res_parts = next_data_line().split()
-        for r in range(nb_resources):
-            resource_cost[(arc_id, r)] = float(res_parts[r])
-
-        # nbInMemoryOfElemSets
-        next_data_line()
-        # nbBuckArcIntrvs + intervals
-        next_data_line()
-
-    source = 0
-    sink = nb_vertices - 1
+        costs[arc_id] = cost
+        resource_cost[(arc_id, 0)] = res_cost
 
     return arcs, resource_cost, costs, lb, ub, source, sink
 

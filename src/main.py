@@ -8,7 +8,7 @@ from typing import List, Optional
 from utils.general import *
 from utils import mip
 from utils import gurobi
-from utils.gen_inst import run_one_instance
+from utils.gen_inst2 import run_one_instance
 
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Solve an RCSP instance from a JSON problem file.")
@@ -28,8 +28,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         problem = load_problem(args.problem)
     else:
         inst_id = 1
-        run_one_instance(inst_id, 5, 0.5)
-        arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw = read_instance(f"data/inst{inst_id}.txt")
+        # run_one_instance(inst_id, 5, 0.5)
+        arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw = read_instance(f"data/1inst{inst_id}.txt")
         problem = adapt_instance_to_cell8(
             arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw
         )

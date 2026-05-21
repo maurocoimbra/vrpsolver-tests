@@ -137,6 +137,7 @@ int runPricing(Graph &graph) {
     std::cout << "\n";
     std::cout << "reduced cost:" << si->computeReducedCost(*sol, sin)
               << std::endl;
+    return 0; // Print only the first path
   }
 
   return 0;
