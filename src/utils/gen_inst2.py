@@ -62,8 +62,5 @@ def get_results(inst_id):
 
 def run_one_instance(inst_id, nb_verts, density):
     verts_info, arcs, arcs_info = generate_inst(nb_verts, density)
-    generate_file(verts_info, arcs, arcs_info, "data/1inst" + str(inst_id) + ".txt")
+    generate_file(verts_info, arcs, arcs_info, "data/inst" + str(inst_id) + ".txt")
     print("generated file")
-
-
-run_one_instance(2, 8, 0.5)

@@ -13,9 +13,12 @@ from utils.gen_inst2 import run_one_instance
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Solve an RCSP instance from a JSON problem file.")
     parser.add_argument(
-        "problem",
-        nargs="?",
-        help="Path to JSON problem (omit with --stdin)",
+        "--problem_txt",
+        help="Path to TXT problem (omit to generate and solve inst99)",
+    )
+    parser.add_argument(
+        "--problem-json",
+        help="Path to JSON problem (overrides problem_txt when set)",
     )
     parser.add_argument(
         "-o",
@@ -24,12 +27,17 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    if args.problem:
-        problem = load_problem(args.problem)
+    if args.problem_json:
+        problem = load_problem(args.problem_json)
+    elif args.problem_txt:
+        arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw = read_instance(args.problem_txt)
+        problem = adapt_instance_to_cell8(
+            arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw
+        )
     else:
-        inst_id = 1
-        # run_one_instance(inst_id, 5, 0.5)
-        arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw = read_instance(f"data/1inst{inst_id}.txt")
+        inst_id = 99
+        run_one_instance(inst_id, 5, 0.5)
+        arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw = read_instance(f"data/inst{inst_id}.txt")
         problem = adapt_instance_to_cell8(
             arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw
         )
