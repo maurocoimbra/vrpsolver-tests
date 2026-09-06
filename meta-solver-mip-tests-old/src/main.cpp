@@ -46,10 +46,9 @@ int runPricing_cpp(bcp_rcsp::SolverInterface *solver, bcp_rcsp::SolverInput &si,
   }
 }
 
-int runPricing(Graph &graph, int maxVisits) {
+int runPricing(Graph &graph) {
 
   int res_id = 0;
-  int custom_res_id = 1;
   int src_id = 0;
   int snk_id = graph.vertices.size() - 1;
 
@@ -57,14 +56,6 @@ int runPricing(Graph &graph, int maxVisits) {
   resources.push_back(
       std::make_unique<bcp_rcsp::StandardMainResourceConstParameters>(res_id,
                                                                       1.0));
-  // custom resource limiting each vertex to be visited at most maxVisits times.
-  // Its arc/vertex parameters are empty structs, so the default ones created by
-  // createVertexData/createArcData are enough: only the const parameter
-  // (holding maxVisits) needs to be provided here.
-  resources.push_back(
-      std::make_unique<bcp_rcsp::CustomResourceConstParameters>(
-          custom_res_id, rcsp_custom_res::CustomResConstParameters(maxVisits),
-          -1));
   bcp_rcsp::GraphData *g = new bcp_rcsp::GraphData(0, std::move(resources),
                                                    graph.vertices.size() - 2);
   g->sourceVertexId = src_id;
@@ -216,17 +207,15 @@ Graph readInstance(const std::string &filepath) {
 }
 
 int main(int argc, char *argv[]) {
-  if (argc < 3) {
-    std::cerr << "Usage: " << argv[0] << " <instance_file> <maxVisits>"
-              << std::endl;
+  if (argc < 2) {
+    std::cerr << "Usage: " << argv[0] << " <instance_file>" << std::endl;
     return 1;
   }
 
   Graph graph = readInstance(argv[1]);
-  int maxVisits = std::atoi(argv[2]);
 
   std::cout << "Read " << graph.vertices.size() << " vertices and "
             << graph.arcs.size() << " arcs" << std::endl;
 
-  return runPricing(graph, maxVisits);
+  return runPricing(graph);
 }

@@ -4,7 +4,6 @@ BITS_OPTION = -m64
 
 ####diretorios com as libs do cplex
 RCSPDIR  = /home/mauro/rcsp
-#RCSPDIR  = /Users/teobaldo/inria_bapcod/bapcodframework/Tools/rcsp
 RCSPINCDIR = $(RCSPDIR)/include_dev
 RCSPLIBDIR = $(RCSPDIR)/build/lib
 
@@ -44,7 +43,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo  "\033[31m \nCompiling $<: \033[0m"
 	$(CPPC) $(CCFLAGS) -c $< -o $@
 	@echo  "\033[32m \ncreating $< dependency file: \033[0m"
-	$(CPPC) $(CCFLAGS) -std=c++17  -MM $< > $(basename $@).d
+	$(CPPC) $(CCFLAGS) -std=c++0x  -MM $< > $(basename $@).d
 	@mv -f $(basename $@).d $(basename $@).d.tmp #proximas tres linhas colocam o diretorio no arquivo de dependencias (g++ nao coloca, surprisingly!)
 	@sed -e 's|.*:|$(basename $@).o:|' < $(basename $@).d.tmp > $(basename $@).d
 	@rm -f $(basename $@).d.tmp

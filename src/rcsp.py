@@ -65,7 +65,8 @@ class RCSP:
       for i in exit:
         min_out = min(min_out, self.resource_cost[arc][i])
 
-      d[arc] = max(math.ceil(self.ub[arc] / (min_in + min_out)), 1)
+      # d[arc] = max(math.ceil(self.ub[arc] / (min_in + min_out)), 1)
+      d[arc] = 3
 
     return d
 

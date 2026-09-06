@@ -11,7 +11,7 @@ from utils import gurobi
 from utils.gen_inst2 import run_one_instance
 
 def main(argv: Optional[List[str]] = None) -> int:
-    parser = argparse.ArgumentParser(description="Solve an RCSP instance from a JSON problem file.")
+    parser = argparse.ArgumentParser(description="Solve an RCSP instance from a TXT problem file.")
     parser.add_argument(
         "--problem_txt",
         help="Path to TXT problem (omit to generate and solve inst99)",
