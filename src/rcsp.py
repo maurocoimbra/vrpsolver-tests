@@ -54,19 +54,20 @@ class RCSP:
     for arc in self.arcs:
       if arc == self.source or arc == self.sink:
         continue
+      
+      d[arc] = 3 # 3 clones per node
 
-      min_in = self.M
-      enter = self.delta_minus(self.arcs, arc)
-      for i in enter:
-        min_in = min(min_in, self.resource_cost[i][arc])
+      # min_in = self.M
+      # enter = self.delta_minus(self.arcs, arc)
+      # for i in enter:
+      #   min_in = min(min_in, self.resource_cost[i][arc])
 
-      min_out = self.M
-      exit = self.delta_plus(self.arcs, arc)
-      for i in exit:
-        min_out = min(min_out, self.resource_cost[arc][i])
+      # min_out = self.M
+      # exit = self.delta_plus(self.arcs, arc)
+      # for i in exit:
+      #   min_out = min(min_out, self.resource_cost[arc][i])
 
       # d[arc] = max(math.ceil(self.ub[arc] / (min_in + min_out)), 1)
-      d[arc] = 3
 
     return d
 

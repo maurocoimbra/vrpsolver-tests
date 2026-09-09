@@ -124,7 +124,7 @@ def adapt_instance_to_cell8(arcs, resource_cost, costs, lb, ub, source, sink):
         "ub": ub_dict,
         "ng_set": ng_set,
         "big_m": 100,
-        "max_seconds": 300,
+        "max_seconds": 6000,
         "write_lp": None
     }
 
