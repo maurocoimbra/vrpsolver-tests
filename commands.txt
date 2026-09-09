@@ -1,0 +1,14 @@
+# rodar o solver do python mip + gurobi
+uv run python3 src/main.py --problem_txt tests/density_02/nb_verts_5.txt
+
+# rodar o solver do meta solver com no máximo 3 entradas em cada vértice
+meta-solver-mip-tests/rcsp_app tests/density_02/nb_verts_5.txt 3
+
+# rodar o solver do meta solver sem restrição de entradas
+meta-solver-mip-tests-old/rcsp_app tests/density_02/nb_verts_5.txt
+
+# rcsp/build - para compilar a lib do rcsp
+cmake -DCMAKE_BUILD_TYPE=Release ..
+
+# em meta-solver-mip-tests para compilar o meta solver
+make

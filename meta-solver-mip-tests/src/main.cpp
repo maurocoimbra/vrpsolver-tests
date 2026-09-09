@@ -106,7 +106,7 @@ int runPricing(Graph &graph, int maxVisits) {
   bcp_rcsp::SolverParameters params;
   params.maxNumOfLabelsInEnumeration = 0;
   params.printLevel = 0;
-  params.maxNumOfColsPerExactIteration = 50;
+  params.maxNumOfColsPerExactIteration = 1; // only generate 1 answer
   bcp_rcsp::Data data(*g, params);
   bcp_rcsp::SolverInterface *si = createAndPrepareMetaSolver(data);
   int nbVars = graph.arcs.size();
@@ -146,7 +146,7 @@ int runPricing(Graph &graph, int maxVisits) {
     std::cout << "\n";
     std::cout << "reduced cost:" << si->computeReducedCost(*sol, sin)
               << std::endl;
-    return 0; // Print only the first path
+    // return 0; // Print only the first path
   }
 
   return 0;
