@@ -17,19 +17,13 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="Path to TXT problem (omit to generate and solve inst99)",
     )
     parser.add_argument(
-        "--problem-json",
-        help="Path to JSON problem (overrides problem_txt when set)",
-    )
-    parser.add_argument(
         "-o",
         "--output",
         help="Write result JSON to this file (default: stdout)",
     )
     args = parser.parse_args(argv)
 
-    if args.problem_json:
-        problem = load_problem(args.problem_json)
-    elif args.problem_txt:
+    if args.problem_txt:
         arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw = read_instance(args.problem_txt)
         problem = adapt_instance_to_cell8(
             arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw
@@ -49,6 +43,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         open(args.output, "w", encoding="utf-8").write(text + "\n")
     else:
         print(text)
+        filename = args.problem_txt.replace("tests", "tests_expected_results")
+        import os
+        os.makedirs("/".join(filename.split("/")[:-1]), exist_ok=True)
+        open(filename, "w", encoding="utf-8").write(text + "\n")
     return 0 if result.get("has_solution") else 1
 
 

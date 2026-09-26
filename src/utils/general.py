@@ -244,6 +244,109 @@ def build_model(rcsp: RCSP) -> Tuple[Model, Dict[str, Dict[str, Any]], Dict[str,
 
     return model
 
+def build_model2(rcsp: RCSP) -> Model:
+    """Build the arc-indexed resource formulation from the second model.
+
+    y[i][j] is the resource level after traversing arc (i, j). Unlike
+    build_model, this formulation does not need big-M resource propagation
+    constraints or z variables: resource flow is propagated through the arcs.
+    """
+    rcsp.replicate_graph_complete()
+
+    model = Model(sense=MINIMIZE, solver_name=CBC)
+    x = {
+        i: {
+            j: model.add_var(var_type=BINARY, name=f"x_{i}_{j}")
+            for j in successors
+        }
+        for i, successors in rcsp.new_arcs.items()
+    }
+    y = {
+        i: {
+            j: model.add_var(var_type=CONTINUOUS, name=f"y_{i}_{j}", lb=0.0)
+            for j in successors
+        }
+        for i, successors in rcsp.new_arcs.items()
+    }
+
+    # (2) Resource lower bound at a visited node. The multiplier on the
+    # right-hand side is required for the replicated graph: an unused replica
+    # must not be forced to satisfy a positive lower bound.
+    for i in rcsp.new_arcs:
+        successors = rcsp.delta_plus(rcsp.new_arcs, i)
+        model += (
+            xsum(
+                y[i][j] - rcsp.new_resource_cost[i][j] * x[i][j]
+                for j in successors
+            )
+            >= rcsp.new_lb[i] * xsum(x[i][j] for j in successors)
+        )
+
+    # (3) Resource upper bound on arrival at a node.
+    for i in rcsp.new_arcs:
+        model += xsum(
+            y[j][i] for j in rcsp.delta_minus(rcsp.new_arcs, i)
+        ) <= rcsp.new_ub[i]
+
+    # (4) Propagate resource flow through each visited node. There is no
+    # outgoing resource variable at the sink, so propagation ends there.
+    for i in rcsp.new_arcs:
+        if i == rcsp.sink:
+            continue
+        model += xsum(
+            y[i][j] for j in rcsp.delta_plus(rcsp.new_arcs, i)
+        ) >= (
+            xsum(y[j][i] for j in rcsp.delta_minus(rcsp.new_arcs, i))
+            + xsum(
+                rcsp.new_resource_cost[i][j] * x[i][j]
+                for j in rcsp.delta_plus(rcsp.new_arcs, i)
+            )
+        )
+
+    # (5) Resource can only be carried by a selected arc.
+    for i, successors in rcsp.new_arcs.items():
+        for j in successors:
+            model += y[i][j] <= rcsp.M * x[i][j]
+
+    # (6) At most one outgoing arc per node.
+    for i in rcsp.new_arcs:
+        model += xsum(x[i][j] for j in rcsp.delta_plus(rcsp.new_arcs, i)) <= 1
+
+    # (7) At most one incoming arc per node.
+    for j in rcsp.new_arcs:
+        model += xsum(x[i][j] for i in rcsp.delta_minus(rcsp.new_arcs, j)) <= 1
+
+    # (8) Flow conservation at intermediate nodes.
+    for j in rcsp.new_arcs:
+        if j == rcsp.source or j == rcsp.sink:
+            continue
+        model += (
+            xsum(x[i][j] for i in rcsp.delta_minus(rcsp.new_arcs, j))
+            - xsum(x[j][k] for k in rcsp.delta_plus(rcsp.new_arcs, j))
+            == 0
+        )
+
+    # (9) One arc leaves the source.
+    model += xsum(
+        x[rcsp.source][j]
+        for j in rcsp.delta_plus(rcsp.new_arcs, rcsp.source)
+    ) == 1
+
+    # (10) One arc enters the sink.
+    model += xsum(
+        x[i][rcsp.sink]
+        for i in rcsp.delta_minus(rcsp.new_arcs, rcsp.sink)
+    ) == 1
+
+    # (1) Objective.
+    model.objective = xsum(
+        rcsp.new_costs[i][j] * x[i][j]
+        for i, successors in rcsp.new_arcs.items()
+        for j in successors
+    )
+
+    return model
+
 
 def create_rcsp_model(problem: Dict[str, Any]) -> Dict[str, Any]:
     rcsp = RCSP(
@@ -257,7 +360,7 @@ def create_rcsp_model(problem: Dict[str, Any]) -> Dict[str, Any]:
         sink=problem["sink"],
         big_m=problem["big_m"],
     )
-    model = build_model(rcsp)
+    model = build_model2(rcsp)
     lp_path = problem.get("write_lp")
     if lp_path:
         model.write(lp_path)
