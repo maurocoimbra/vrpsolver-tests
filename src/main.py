@@ -43,7 +43,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         open(args.output, "w", encoding="utf-8").write(text + "\n")
     else:
         print(text)
-        filename = args.problem_txt.replace("tests", "tests_expected_results")
+        filename = args.problem_txt.replace("tests", "tests_expected_results3")
         import os
         os.makedirs("/".join(filename.split("/")[:-1]), exist_ok=True)
         open(filename, "w", encoding="utf-8").write(text + "\n")

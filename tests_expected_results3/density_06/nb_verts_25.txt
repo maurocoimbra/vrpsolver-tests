@@ -1,0 +1,21 @@
+{
+  "status": 2,
+  "optimal": true,
+  "has_solution": true,
+  "objective_value": -6.315560644057224,
+  "path": [
+    "A",
+    "J",
+    "U",
+    "E",
+    "X",
+    "L",
+    "R",
+    "M",
+    "S",
+    "P",
+    "B",
+    "Y"
+  ],
+  "ng_set_ok": true
+}
