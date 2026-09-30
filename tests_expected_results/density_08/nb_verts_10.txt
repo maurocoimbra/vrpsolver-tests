@@ -2,7 +2,7 @@
   "status": 2,
   "optimal": true,
   "has_solution": true,
-  "objective_value": -5.266500000000001,
+  "objective_value": -5.2665,
   "path": [
     "A",
     "D",

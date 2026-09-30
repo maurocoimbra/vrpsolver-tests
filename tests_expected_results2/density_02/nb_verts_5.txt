@@ -1,5 +1,0 @@
-{
-  "status": 3,
-  "optimal": false,
-  "has_solution": false
-}
