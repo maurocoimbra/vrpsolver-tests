@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import argparse
 import json
 import sys
@@ -26,27 +27,41 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.problem_txt:
         arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw = read_instance(args.problem_txt)
         problem = adapt_instance_to_cell8(
-            arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw
+            arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw, max_seconds=3600
         )
     else:
         inst_id = 99
         run_one_instance(inst_id, 5, 0.5)
         arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw = read_instance(f"data/inst{inst_id}.txt")
         problem = adapt_instance_to_cell8(
-            arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw
+            arcs_raw, resource_cost_raw, costs_raw, lb_raw, ub_raw, source_raw, sink_raw, max_seconds=3600
         )
+    
+    result_filename = args.problem_txt.replace("tests", "tests_expected_results1")
+
+    result_directory = os.path.dirname(result_filename)
+    instance_filename = os.path.basename(args.problem_txt)
+
+    log_filename = os.path.join(
+        result_directory,
+        f"log_{instance_filename}",
+    )
+
+    os.makedirs(result_directory or ".", exist_ok=True)
 
     rcsp, model = create_rcsp_model(problem)
-    result = gurobi.solve_problem(rcsp, model, problem)
+    result = gurobi.solve_problem(
+        rcsp,
+        model,
+        problem,
+        log_file=log_filename
+    )
     text = json.dumps(result, indent=2)
     if args.output:
         open(args.output, "w", encoding="utf-8").write(text + "\n")
     else:
         print(text)
-        filename = args.problem_txt.replace("tests", "tests_expected_results3")
-        import os
-        os.makedirs("/".join(filename.split("/")[:-1]), exist_ok=True)
-        open(filename, "w", encoding="utf-8").write(text + "\n")
+        open(result_filename, "w", encoding="utf-8").write(text + "\n")
     return 0 if result.get("has_solution") else 1
 
 

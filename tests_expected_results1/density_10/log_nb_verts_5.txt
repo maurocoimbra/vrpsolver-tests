@@ -1,0 +1,35 @@
+
+Gurobi 13.0.2 (linux64) logging started Thu Oct  1 01:42:49 2026
+
+Set parameter LogFile to value "tests_expected_results1/density_10/log_nb_verts_5.txt"
+Gurobi Optimizer version 13.0.2 build v13.0.2rc1 (linux64 - "Ubuntu 24.04.4 LTS")
+
+CPU model: AMD Ryzen 7 6800H with Radeon Graphics, instruction set [SSE2|AVX|AVX2]
+Thread count: 8 physical cores, 16 logical processors, using up to 16 threads
+
+Non-default parameters:
+TimeLimit  3600
+
+Academic license 2782884 - for non-commercial use only - registered to ma___@academico.ufpb.br
+Optimize a model with 138 rows, 146 columns and 866 nonzeros (Min)
+Model fingerprint: 0x1be8bac5
+Model has 73 linear objective coefficients
+Variable types: 73 continuous, 73 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [6e-01, 1e+02]
+  Objective range  [2e-01, 3e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+01]
+
+Found heuristic solution: objective 0.4162100
+Presolve removed 138 rows and 146 columns
+Presolve time: 0.00s
+Presolve: All rows and columns removed
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds (0.00 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 1: 0.41621 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 4.162100000000e-01, best bound 4.162100000000e-01, gap 0.0000%

@@ -30,7 +30,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--timeout-minutes",
         type=float,
-        default=30,
+        default=120,
         help="Maximum runtime for each instance (default: 30 minutes)",
     )
     parser.add_argument(

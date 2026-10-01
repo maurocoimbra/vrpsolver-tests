@@ -71,7 +71,7 @@ def _vertex_id_to_letter_label(v: int) -> str:
     return "".join(reversed(chars))
 
 
-def adapt_instance_to_cell8(arcs, resource_cost, costs, lb, ub, source, sink):
+def adapt_instance_to_cell8(arcs, resource_cost, costs, lb, ub, source, sink, max_seconds):
     # String vertex ids as letters (0->A, 1->B, ...) for cell8-style problems
     vertices = sorted({v for arc in arcs for v in arc})
     # Ensure source/sink included
@@ -124,7 +124,7 @@ def adapt_instance_to_cell8(arcs, resource_cost, costs, lb, ub, source, sink):
         "ub": ub_dict,
         "ng_set": ng_set,
         "big_m": 100,
-        "max_seconds": 6000,
+        "max_seconds": max_seconds,
         "write_lp": None
     }
 

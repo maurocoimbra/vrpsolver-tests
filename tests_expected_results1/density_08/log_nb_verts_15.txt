@@ -1,0 +1,86 @@
+
+Gurobi 13.0.2 (linux64) logging started Wed Sep 30 23:45:40 2026
+
+Set parameter LogFile to value "tests_expected_results1/density_08/log_nb_verts_15.txt"
+Gurobi Optimizer version 13.0.2 build v13.0.2rc1 (linux64 - "Ubuntu 24.04.4 LTS")
+
+CPU model: AMD Ryzen 7 6800H with Radeon Graphics, instruction set [SSE2|AVX|AVX2]
+Thread count: 8 physical cores, 16 logical processors, using up to 16 threads
+
+Non-default parameters:
+TimeLimit  3600
+
+Academic license 2782884 - for non-commercial use only - registered to ma___@academico.ufpb.br
+Optimize a model with 1353 rows, 2216 columns and 13265 nonzeros (Min)
+Model fingerprint: 0xfc04558e
+Model has 1108 linear objective coefficients
+Variable types: 1108 continuous, 1108 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [5e-01, 1e+02]
+  Objective range  [1e-02, 3e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+01]
+
+Found heuristic solution: objective 2.8176900
+Presolve removed 7 rows and 0 columns
+Presolve time: 0.06s
+Presolved: 1346 rows, 2216 columns, 13129 nonzeros
+Variable types: 1108 continuous, 1108 integer (1108 binary)
+
+Root relaxation: objective -1.178686e+01, 2249 iterations, 0.08 seconds (0.08 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0  -11.78686    0   28    2.81769  -11.78686   518%     -    0s
+H    0     0                      -2.8091300  -11.78686   320%     -    0s
+H    0     0                      -3.5524200  -11.78686   232%     -   -3s
+H    0     0                      -4.3530300  -11.78686   171%     -   -3s
+     0     0  -11.70855    0   54   -4.35303  -11.70855   169%     -   -2s
+     0     0  -11.61866    0   56   -4.35303  -11.61866   167%     -   -2s
+     0     0  -11.55801    0   56   -4.35303  -11.55801   166%     -   -2s
+     0     0  -11.40019    0   49   -4.35303  -11.40019   162%     -   -2s
+     0     0  -11.40019    0   43   -4.35303  -11.40019   162%     -   -2s
+     0     0  -11.39745    0   59   -4.35303  -11.39745   162%     -   -2s
+     0     0  -11.39745    0   63   -4.35303  -11.39745   162%     -   -2s
+     0     0  -11.12699    0   49   -4.35303  -11.12699   156%     -   -1s
+     0     0  -11.12084    0   47   -4.35303  -11.12084   155%     -   -1s
+     0     0  -11.12052    0   47   -4.35303  -11.12052   155%     -   -1s
+     0     0  -11.11049    0   59   -4.35303  -11.11049   155%     -   -1s
+     0     0  -11.05932    0   59   -4.35303  -11.05932   154%     -   -1s
+     0     0  -11.05682    0   55   -4.35303  -11.05682   154%     -   -1s
+     0     0  -11.04736    0   56   -4.35303  -11.04736   154%     -   -1s
+     0     0  -11.04736    0   56   -4.35303  -11.04736   154%     -   -1s
+     0     0  -10.98605    0   46   -4.35303  -10.98605   152%     -   -1s
+     0     0  -10.97239    0   47   -4.35303  -10.97239   152%     -   -1s
+     0     0  -10.97239    0   47   -4.35303  -10.97239   152%     -   -1s
+     0     0  -10.90500    0   50   -4.35303  -10.90500   151%     -   -1s
+     0     0  -10.90500    0   49   -4.35303  -10.90500   151%     -   -1s
+     0     0  -10.88863    0   67   -4.35303  -10.88863   150%     -   -1s
+     0     0  -10.88863    0   58   -4.35303  -10.88863   150%     -   -1s
+     0     0  -10.88227    0   61   -4.35303  -10.88227   150%     -   -1s
+     0     0  -10.88204    0   55   -4.35303  -10.88204   150%     -   -1s
+     0     0  -10.88204    0   58   -4.35303  -10.88204   150%     -   -1s
+     0     0  -10.88204    0   60   -4.35303  -10.88204   150%     -   -1s
+     0     0  -10.88204    0   58   -4.35303  -10.88204   150%     -   -1s
+     0     0  -10.88204    0   58   -4.35303  -10.88204   150%     -   -1s
+     0     0  -10.88204    0   40   -4.35303  -10.88204   150%     -   -1s
+     0     2  -10.85156    0   39   -4.35303  -10.85156   149%     -   -1s
+     3     4   -9.74914    2   45   -4.35303  -10.18032   134%   745    0s
+
+Cutting planes:
+  Gomory: 1
+  Lift-and-project: 2
+  Cover: 2
+  Implied bound: 150
+  MIR: 37
+  Flow cover: 58
+
+Explored 1189 nodes (146163 simplex iterations) in 2.96 seconds (4.36 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 4: -4.35303 -3.55242 -2.80913 2.81769 
+No other solutions better than -4.35303
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -4.353030000000e+00, best bound -4.353030000000e+00, gap 0.0000%

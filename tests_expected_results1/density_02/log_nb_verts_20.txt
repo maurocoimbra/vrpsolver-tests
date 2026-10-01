@@ -1,0 +1,43 @@
+
+Gurobi 13.0.2 (linux64) logging started Wed Sep 30 22:22:40 2026
+
+Set parameter LogFile to value "tests_expected_results1/density_02/log_nb_verts_20.txt"
+Gurobi Optimizer version 13.0.2 build v13.0.2rc1 (linux64 - "Ubuntu 24.04.4 LTS")
+
+CPU model: AMD Ryzen 7 6800H with Radeon Graphics, instruction set [SSE2|AVX|AVX2]
+Thread count: 8 physical cores, 16 logical processors, using up to 16 threads
+
+Non-default parameters:
+TimeLimit  3600
+
+Academic license 2782884 - for non-commercial use only - registered to ma___@academico.ufpb.br
+Optimize a model with 915 rows, 1160 columns and 6953 nonzeros (Min)
+Model fingerprint: 0x876574b5
+Model has 580 linear objective coefficients
+Variable types: 580 continuous, 580 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [5e-01, 1e+02]
+  Objective range  [6e-02, 3e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+01]
+
+Found heuristic solution: objective 0.4561200
+Presolve removed 70 rows and 72 columns
+Presolve time: 0.04s
+Presolved: 845 rows, 1088 columns, 6436 nonzeros
+Variable types: 544 continuous, 544 integer (544 binary)
+
+Root relaxation: cutoff, 662 iterations, 0.02 seconds (0.01 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0     cutoff    0         0.45612    0.45612  0.00%     -    0s
+
+Explored 1 nodes (662 simplex iterations) in 0.07 seconds (0.04 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 1: 0.45612 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 4.561200000000e-01, best bound 4.561200000000e-01, gap 0.0000%

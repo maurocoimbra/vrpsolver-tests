@@ -1,7 +1,7 @@
 import os
 import gurobipy as gp
 from gurobipy import GRB
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 def retrieve_path(model):
   # get only used arcs
@@ -40,13 +40,17 @@ def check_ng_set(rcsp, path):
 
   return True
 
-def solve_problem(rcsp, model, problem):
+def solve_problem(rcsp, model, problem, log_file: Optional[str] = None):
     model.write("./tmp_gurobi_model.lp")
     model = gp.read("./tmp_gurobi_model.lp")
     os.remove("./tmp_gurobi_model.lp")
 
     max_seconds = problem["max_seconds"]
     model.setParam("TimeLimit", max_seconds)
+
+    if log_file:
+        model.setParam("LogFile", log_file)
+
     model.optimize()
 
     status = model.Status
